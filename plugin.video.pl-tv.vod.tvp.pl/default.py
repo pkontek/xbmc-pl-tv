@@ -61,7 +61,8 @@ def tvpAPI(parent_id):
         
 
 def listingTVP(json):
-    categories = json['items']
+#    categories = json['items']
+    categories = sorted(json['items'], key=lambda item:item['title'])
     darmowe=[]
     for item in categories:
         if 'samsung_enabled' in item:
@@ -77,7 +78,6 @@ def listingTVP(json):
         for item in darmowe:
             if item['playable']:
                 if 'samsung_enabled' in item and item['samsung_enabled'] and item['release_date'].get('sec','') < time() and item['play_mode'] == 1:
-                    print item
                     filename = str(item.get('_id',''))
                     if 'video/mp4' in (item.get('videoFormatMimes') or []):
                         filename = filename+'&mime_type=video/mp4'
@@ -101,7 +101,6 @@ def listingTVP(json):
                     xbmcplugin.addSortMethod(pluginHandle,xbmcplugin.SORT_METHOD_DATE)
             else:
                 if item['types'][1]!='video':
-                    print item
                     title = item.get('title','')
                     filename = str(item.get('asset_id',''))
                     if filename != '1597829' and title!='Start' and filename != '1649991':
@@ -133,6 +132,8 @@ if pluginQuery.startswith('?odtwarzaj='):
 else:
     parent_id = pluginQuery[8:]
     if not parent_id:
-        parent_id = '1785454'
+#        parent_id = '1785454'
+        parent_id =  '12345611'
+#        [12345611, 2, , 91629,2919697
     tvpAPI(parent_id)
 
