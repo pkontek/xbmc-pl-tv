@@ -7,7 +7,7 @@ import simplejson
 from time import localtime, strftime, time
 
 __addon_name__ = 'vod.tvp.pl'
-__id__ = 'pplugin.video.pl-tv.vod.tvp.pl'
+__id__ = 'plugin.video.pl-tv.vod.tvp.pl'
 __settings__ = xbmcaddon.Addon(__id__)
 
 pluginUrl = sys.argv[0]
