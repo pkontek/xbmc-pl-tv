@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="repository.xbmc-pl-tv" name="xbmc-pl-tv Addons" version="1.0.0" provider-name="Piotr Kontek">
+<addon id="repository.xbmc-pl-tv" name="xbmc-pl-tv Addons" version="1.0.0" provider-name="smuto, sd-xbmc, Piotr Kontek">
 	<extension point="xbmc.addon.repository" name="xbmc-pl-tv Addons">
 		<info compressed="false">http://xbmc-pl-tv.googlecode.com/svn/trunk/addons.xml</info>
 		<checksum>http://xbmc-pl-tv.googlecode.com/svn/trunk/addons.xml.md5</checksum>
