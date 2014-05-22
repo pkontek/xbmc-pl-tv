@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="plugin.video.tvnplayer.pl"
+<addon id="plugin.video.pl-tv.tvnplayer.pl"
        name="TVNPlayer"
-       version="1.2.9"
-       provider-name="sd-xbmc, smuto">
+       version="1.0.0"
+       provider-name="Piotr Kontek">
   <requires>
-    <import addon="xbmc.python" version="2.0"/>
+    <import addon="xbmc.python" version="2.14.0"/>
     <import addon="script.module.simplejson" version="2.0.10"/>
   </requires>
   <extension point="xbmc.python.pluginsource"
@@ -21,12 +21,12 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.vod.tvp.pl"
+<addon id="plugin.video.pl-tv.vod.tvp.pl"
        name="Vod.tvp.pl"
-       version="0.2.4"
-       provider-name="smuto">
+       version="1.0.0"
+       provider-name="Piotr Kontek">
   <requires>
-    <import addon="xbmc.python" version="2.0"/>
+    <import addon="xbmc.python" version="2.14.0"/>
     <import addon="script.module.simplejson" version="2.0.10"/>
   </requires>
   <extension point="xbmc.python.pluginsource"
