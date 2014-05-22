@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addons>
+<addon id="plugin.video.tvnplayer.pl"
+       name="TVNPlayer"
+       version="1.2.9"
+       provider-name="sd-xbmc, smuto">
+  <requires>
+    <import addon="xbmc.python" version="2.0"/>
+    <import addon="script.module.simplejson" version="2.0.10"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+            library="default.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">http://tvnplayer.pl</summary>
+    <summary></summary>
+    <description lang="en">tvn player</description>
+    <description lang="pl">Usługa tvn player jest dostępna na wielu platformach. Ciesz się oglądaniem ulubionych programów, filmów i seriali w każdym miejscu i o każdej porze!</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="plugin.video.vod.tvp.pl"
+       name="Vod.tvp.pl"
+       version="0.2.4"
+       provider-name="smuto">
+  <requires>
+    <import addon="xbmc.python" version="2.0"/>
+    <import addon="script.module.simplejson" version="2.0.10"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+            library="default.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">VOD - Telewizja Polska SA</summary>
+    <description lang="en">VOD - Telewizja Polska SA</description>
+    <description lang="pl">Vod.tvp.pl to największa w internecie baza filmów fabularnych, dokumentalnych, seriali i audycji Telewizji Polskiej.</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="repository.xbmc-pl-tv" name="xbmc-pl-tv Addons" version="1.0.0" provider-name="Piotr Kontek">
+﻿  <extension point="xbmc.addon.repository" name="xbmc-pl-tv Addons">
+﻿  ﻿  <info compressed="false">http://xbmc-pl-tv.googlecode.com/svn/trunk/addons.xml</info>
+﻿  ﻿  <checksum>http://xbmc-pl-tv.googlecode.com/svn/trunk/addons.xml.md5</checksum>
+﻿  ﻿  <datadir zip="false">http://xbmc-pl-tv.googlecode.com/svn/trunk</datadir>
+﻿  </extension>
+﻿  <extension point="xbmc.addon.metadata">
+    <summary>xbmc-pl-tv Addon Repo</summary>
+    <description>Polish TV addons for XBMC Gotham</description>
+    <disclaimer>The owners and submitters to this repository do not host or distribute any of the content displayed by these addons nor do they have any affiliation with the content providers.</disclaimer>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+</addons>
