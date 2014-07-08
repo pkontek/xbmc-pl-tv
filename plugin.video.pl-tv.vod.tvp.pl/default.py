@@ -17,11 +17,22 @@ listing_url = 'http://www.api.v3.tvp.pl/shared/listing.php?dump=json'
 urlImage = 'http://s.v3.tvp.pl/images/%s/%s/%s/uid_%s_width_%d_gs_0.jpg'
 
 def tvpAPI(parent_id):
-    url = listing_url + '&direct=true&count=150&parent_id=%s'% (parent_id)
-    response = urllib2.urlopen(url)
-    json = simplejson.loads(response.read())
-    response.close()
-    items = json['items']
+    if not parent_id:
+        url = listing_url + '&direct=true&count=150&parent_id=%s'% ('1785454')
+        response = urllib2.urlopen(url)
+        json = simplejson.loads(response.read())
+        response.close()
+        url = listing_url + '&direct=true&count=150&parent_id=%s'% ('12345611')
+        response = urllib2.urlopen(url)
+        json2 = simplejson.loads(response.read())
+        response.close()
+        items = json['items'] + json2['items']
+    else:
+        url = listing_url + '&direct=true&count=150&parent_id=%s'% (parent_id)
+        response = urllib2.urlopen(url)
+        json = simplejson.loads(response.read())
+        response.close()
+        items = json['items']
     if not items:
         print 'pusta'
         parentlist = []
@@ -57,12 +68,12 @@ def tvpAPI(parent_id):
                     filename = str(item.get('_id',''))
                     return tvpAPI(filename)
         else:
-            return listingTVP(json)
+            return listingTVP(items)
         
 
-def listingTVP(json):
+def listingTVP(items):
 #    categories = json['items']
-    categories = sorted(json['items'], key=lambda item:item['title'])
+    categories = sorted(items, key=lambda item:item['title'])
     darmowe=[]
     for item in categories:
         if 'samsung_enabled' in item:
@@ -131,9 +142,5 @@ if pluginQuery.startswith('?odtwarzaj='):
 
 else:
     parent_id = pluginQuery[8:]
-    if not parent_id:
-#        parent_id = '1785454'
-        parent_id =  '12345611'
-#        [12345611, 2, , 91629,2919697
     tvpAPI(parent_id)
 
