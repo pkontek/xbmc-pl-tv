@@ -22,11 +22,12 @@ def tvpAPI(parent_id):
         response = urllib2.urlopen(url)
         json = simplejson.loads(response.read())
         response.close()
+        items = json['items']
         url = listing_url + '&direct=true&count=150&parent_id=%s'% ('12345611')
         response = urllib2.urlopen(url)
-        json2 = simplejson.loads(response.read())
+        json = simplejson.loads(response.read())
         response.close()
-        items = json['items'] + json2['items']
+        items = items + json['items']
     else:
         url = listing_url + '&direct=true&count=150&parent_id=%s'% (parent_id)
         response = urllib2.urlopen(url)
