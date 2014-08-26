@@ -1,0 +1,10 @@
+[COLOR orange][B]0.3.5[/B][/COLOR]
+- Include plugin into xbmc-pl-tv repository.
+
+[COLOR orange][B]0.3.4[/B][/COLOR]
+- Fix compatibility with XBMC 13 Gotham.
+
+[COLOR orange][B]0.3.3[/B][/COLOR]
+- Import from smuto.
+- List new episodes.
+

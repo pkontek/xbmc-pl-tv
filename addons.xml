@@ -41,6 +41,27 @@
   </extension>
 </addon>
 
+<addon id="plugin.video.ipla.pl"
+       name="ipla.tv"
+       version="0.3.5"
+       provider-name="xbmcpl">
+  <requires>
+    <import addon="xbmc.python" version="2.14.0"/>
+    <import addon="script.module.elementtree" version="1.2.7" />
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+            library="default.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Ipla - Internet TV</summary>
+    <summary lang="pl">Interaktywna platforma multimedialna.</summary>
+    <description lang="en">Watch videos from www.ipla.pl</description>
+    <description lang="pl">Ipla to największa telewizja internetowa w Polsce. Swoim widzom oferuje transmisje w wysokiej jakości, największą w Polsce legalną bazę treści, w tym tysiące odcinków seriali, programów rozrywkowych i informacyjnych, koncerty i najważniejsze wydarzenia sportowe, a także ponad tysiąc filmów pełnometrażowych. Dostęp do zasobów telewizji ipla mają użytkownicy różnych urządzeń dzięki aplikacjom ipla specjalnie do nich przystosowanym.</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
 <addon id="repository.xbmc-pl-tv" name="xbmc-pl-tv Addons" version="1.0.0" provider-name="xbmc-pl-tv">
 ﻿  <extension point="xbmc.addon.repository" name="xbmc-pl-tv Addons">
 ﻿  ﻿  <info compressed="false">http://xbmc-pl-tv.googlecode.com/svn/trunk/addons.xml</info>
