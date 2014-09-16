@@ -121,7 +121,20 @@ def listingTVP(items):
  
 def get_stream_url(channel_id):
     print 'http://www.tvp.pl/pub/stat/videofileinfo?video_id=' + channel_id 
-    videofileinfo = urllib2.urlopen('http://www.tvp.pl/pub/stat/videofileinfo?video_id=' + channel_id)
+    if __settings__.getSetting('pl_proxy') == '':
+        videofileinfo = urllib2.urlopen('http://www.tvp.pl/pub/stat/videofileinfo?video_id=' + channel_id)
+    else:
+        l_proxy = 'http://' + __settings__.getSetting('pl_proxy') + ':' + __settings__.getSetting('pl_proxy_port')
+        proxy_handler = urllib2.ProxyHandler({'http':pl_proxy})
+        if __settings__.getSetting('pl_proxy_pass') <> '' and __settings__.getSetting('pl_proxy_user') <> '':
+            password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
+            password_mgr.add_password(None, pl_proxy, __settings__.getSetting('pl_proxy_user'), __settings__.getSetting('pl_proxy_pass'))
+            proxy_auth_handler = urllib2.ProxyBasicAuthHandler(password_mgr)
+            opener = urllib2.build_opener(proxy_handler, proxy_auth_handler)
+        else:
+            opener = urllib2.build_opener(proxy_handler)
+        videofileinfo = opener.open('http://www.tvp.pl/pub/stat/videofileinfo?video_id=' + channel_id)
+
     json = simplejson.loads(videofileinfo.read())
     videofileinfo.close()
     return json['video_url']
