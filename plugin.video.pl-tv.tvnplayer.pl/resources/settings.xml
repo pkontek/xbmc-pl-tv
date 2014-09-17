@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <setting id="auto_quality" type="bool" label="30042" default="true"/>
+    <setting type="sep" />
+    <setting label="Darmowe proxy - http://spys.ru/free-proxy-list/PL/" type="lsep"/>
+    <setting id="pl_proxy" type="text" label="30040" default=""/>
+    <setting id="pl_proxy_port" type="text" label="30041" default=""/>
+    <setting id="pl_proxy_user" type="text" label="30043" default=""/>
+    <setting id="pl_proxy_pass" type="text" label="30044" default=""/>
+</settings>

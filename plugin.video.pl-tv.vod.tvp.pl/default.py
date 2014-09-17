@@ -120,11 +120,10 @@ def listingTVP(items):
         xbmcplugin.endOfDirectory(pluginHandle) 
  
 def get_stream_url(channel_id):
-    print 'http://www.tvp.pl/pub/stat/videofileinfo?video_id=' + channel_id 
     if __settings__.getSetting('pl_proxy') == '':
         videofileinfo = urllib2.urlopen('http://www.tvp.pl/pub/stat/videofileinfo?video_id=' + channel_id)
     else:
-        l_proxy = 'http://' + __settings__.getSetting('pl_proxy') + ':' + __settings__.getSetting('pl_proxy_port')
+        pl_proxy = 'http://' + __settings__.getSetting('pl_proxy') + ':' + __settings__.getSetting('pl_proxy_port')
         proxy_handler = urllib2.ProxyHandler({'http':pl_proxy})
         if __settings__.getSetting('pl_proxy_pass') <> '' and __settings__.getSetting('pl_proxy_user') <> '':
             password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()

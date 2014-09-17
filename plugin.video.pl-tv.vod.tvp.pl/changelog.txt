@@ -1,2 +1,5 @@
+1.0.5:
+- Added add-on config for proxy settings
+
 1.0.4:
 - Added support for proxy settings
