@@ -138,13 +138,17 @@ def get_stream_url(channel_id):
     json = simplejson.loads(videofileinfo.read())
     videofileinfo.close()
 
-    if __settings__.getSetting('auto_quality') == 'true' :
-        select = 3
+    print '!@#$%'
+    if json['video_url'].find('video-4') <0:
+        video_url = json['video_url']
     else:
-        profile_name_list = ['Średnia','Wysoka','Bardzo wysoka','HD']
-        select = xbmcgui.Dialog().select('Wybierz jakość', profile_name_list)
-    
-    return json['video_url'].replace('video-4.','video-'+str(4+select)+'.')
+        if __settings__.getSetting('auto_quality') == 'true' :
+            qualit = 3
+        else:
+            profile_name_list = ['Średnia','Wysoka','Bardzo wysoka','HD']
+            quality = xbmcgui.Dialog().select('Wybierz jakość', profile_name_list)
+        video_url = json['video_url'].replace('video-4.','video-'+str(4+quality)+'.')
+    return video_url
 
 
 def addDir(name,parent,iconimage):
