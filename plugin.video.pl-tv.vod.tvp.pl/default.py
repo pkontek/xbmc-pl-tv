@@ -120,6 +120,7 @@ def listingTVP(items):
         xbmcplugin.endOfDirectory(pluginHandle) 
  
 def get_stream_url(channel_id):
+    print 'http://www.tvp.pl/pub/stat/videofileinfo?video_id=' + channel_id
     if __settings__.getSetting('pl_proxy') == '':
         videofileinfo = urllib2.urlopen('http://www.tvp.pl/pub/stat/videofileinfo?video_id=' + channel_id)
     else:
@@ -136,7 +137,14 @@ def get_stream_url(channel_id):
 
     json = simplejson.loads(videofileinfo.read())
     videofileinfo.close()
-    return json['video_url']
+
+    if __settings__.getSetting('auto_quality') == 'true' :
+        select = 3
+    else:
+        profile_name_list = ['Średnia','Wysoka','Bardzo wysoka','HD']
+        select = xbmcgui.Dialog().select('Wybierz jakość', profile_name_list)
+    
+    return json['video_url'].replace('video-4.','video-'+str(4+select)+'.')
 
 
 def addDir(name,parent,iconimage):

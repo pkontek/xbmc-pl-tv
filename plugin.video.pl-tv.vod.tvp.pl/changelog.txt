@@ -1,3 +1,6 @@
+1.0.6:
+- Added ask for quality, and auto play best quality in add-on config  
+
 1.0.5:
 - Added add-on config for proxy settings
 
