@@ -1,3 +1,6 @@
+1.2.12:
+- Bugfixes
+ 
 1.2.11:
 - Repaired URL to service
  
