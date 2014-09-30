@@ -1,2 +1,5 @@
+1.2.11:
+- Repaired URL to service
+ 
 1.2.10:
 - Added add-on config for proxy settings
