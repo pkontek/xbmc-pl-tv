@@ -82,14 +82,14 @@ def listingTVP(items):
                 darmowe.append(item)
         else:
             darmowe.append(item)
-
+    
     if not darmowe:
         dialog = xbmcgui.Dialog()
         ok = dialog.ok('tvp','Niestety, nie ma darmowej zawartości')
     else:
         for item in darmowe:
             if item['playable']:
-                if 'samsung_enabled' in item and item['samsung_enabled'] and item['release_date'].get('sec','') < time() and item['play_mode'] == 1:
+                if item['release_date'].get('sec','') < time() and item['play_mode'] == 1:
                     filename = str(item.get('_id',''))
                     if 'video/mp4' in (item.get('videoFormatMimes') or []):
                         filename = filename+'&mime_type=video/mp4'
