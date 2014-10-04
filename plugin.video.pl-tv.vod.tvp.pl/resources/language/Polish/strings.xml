@@ -2,7 +2,12 @@
 <strings>
 	<string id="30041">Port</string>
 	<string id="30040">PL Proxy IP</string>
-	<string id="30042">Automatycznie odtwarzaj w najlepszej jakości</string>
+	<string id="30042">Automatycznie odtwarzaj w wybranej jakości</string>
 	<string id="30043">Użytkownik</string>
 	<string id="30044">Hasło</string>
+	<string id="30045">Średnia</string>
+	<string id="30046">Wysoka</string>
+	<string id="30047">Bardzo wysoka</string>
+	<string id="30048">HD</string>
+	<string id="30049">Jakość</string>
 </strings>

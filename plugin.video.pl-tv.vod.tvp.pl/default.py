@@ -142,7 +142,7 @@ def get_stream_url(channel_id):
         video_url = json['video_url']
     else:
         if __settings__.getSetting('auto_quality') == 'true' :
-            quality = 3
+            quality = int(__settings__.getSetting('quality'))
         else:
             profile_name_list = ['Średnia','Wysoka','Bardzo wysoka','HD']
             quality = xbmcgui.Dialog().select('Wybierz jakość', profile_name_list)
