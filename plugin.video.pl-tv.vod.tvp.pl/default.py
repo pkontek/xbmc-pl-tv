@@ -146,7 +146,7 @@ def get_stream_url(channel_id):
         else:
             profile_name_list = ['Średnia','Wysoka','Bardzo wysoka','HD']
             quality = xbmcgui.Dialog().select('Wybierz jakość', profile_name_list)
-        video_url = json['video_url'].replace('video-4.','video-'+str(4+quality)+'.')
+        video_url = json['video_url'].replace('video-4.','video-'+str(7-quality)+'.')
     return video_url
 
 
