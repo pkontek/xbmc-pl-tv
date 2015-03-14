@@ -13,7 +13,7 @@
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">http://tvnplayer.pl</summary>
-    <summary></summary>
+    <summary lang="pl">http://tvnplayer.pl</summary>
     <description lang="en">tvn player</description>
     <description lang="pl">Usługa tvn player jest dostępna na wielu platformach. Ciesz się oglądaniem ulubionych programów, filmów i seriali w każdym miejscu i o każdej porze!</description>
     <platform>all</platform>
