@@ -66,6 +66,7 @@
 ﻿  <extension point="xbmc.addon.repository" name="xbmc-pl-tv Addons">
 ﻿  ﻿  <info compressed="false">https://raw.githubusercontent.com/pkontek/xbmc-pl-tv/master/addons.xml</info>
 ﻿  ﻿  <checksum>https://raw.githubusercontent.com/pkontek/xbmc-pl-tv/master/addons.xml.md5</checksum>
+    <datadir zip="false">https://github.com/pkontek/xbmc-pl-tv/raw/master/</datadir>
 ﻿  </extension>
 ﻿  <extension point="xbmc.addon.metadata">
     <summary>xbmc-pl-tv Addon Repo</summary>
