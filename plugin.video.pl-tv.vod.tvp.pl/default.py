@@ -16,32 +16,44 @@ pluginQuery = sys.argv[2]
 listing_url = 'http://www.api.v3.tvp.pl/shared/listing.php?dump=json'
 urlImage = 'http://s.v3.tvp.pl/images/%s/%s/%s/uid_%s_width_%d_gs_0.jpg'
 
+def get_url_response(url):
+    print url
+    if __settings__.getSetting('pl_proxy') == '':
+        videofileinfo = urllib2.urlopen(url)
+    else:
+        pl_proxy = 'http://' + __settings__.getSetting('pl_proxy') + ':' + __settings__.getSetting('pl_proxy_port')
+        proxy_handler = urllib2.ProxyHandler({'http':pl_proxy})
+        if __settings__.getSetting('pl_proxy_pass') <> '' and __settings__.getSetting('pl_proxy_user') <> '':
+            password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
+            password_mgr.add_password(None, pl_proxy, __settings__.getSetting('pl_proxy_user'), __settings__.getSetting('pl_proxy_pass'))
+            proxy_auth_handler = urllib2.ProxyBasicAuthHandler(password_mgr)
+            opener = urllib2.build_opener(proxy_handler, proxy_auth_handler)
+        else:
+            opener = urllib2.build_opener(proxy_handler)
+        videofileinfo = opener.open(url)
+
+    json = simplejson.loads(videofileinfo.read())
+    videofileinfo.close()
+    return json
+
 def tvpAPI(parent_id):
     if not parent_id:
         url = listing_url + '&direct=true&count=150&parent_id=%s'% ('1785454')
-        response = urllib2.urlopen(url)
-        json = simplejson.loads(response.read())
-        response.close()
+        json = get_url_response(url)
         items = json['items']
         url = listing_url + '&direct=true&count=150&parent_id=%s'% ('12345611')
-        response = urllib2.urlopen(url)
-        json = simplejson.loads(response.read())
-        response.close()
+        json = get_url_response(url)
         items = items + json['items']
     else:
         url = listing_url + '&direct=true&count=150&parent_id=%s'% (parent_id)
-        response = urllib2.urlopen(url)
-        json = simplejson.loads(response.read())
-        response.close()
+        json = get_url_response(url)
         items = json['items']
     if not items:
         print 'pusta'
         parentlist = []
         parent_id = json['query']['parent_node_id']
         url = listing_url + '&filter=playable=true&direct=false&count=500&page=1&parent_id=%s'% (parent_id)
-        response = urllib2.urlopen(url)
-        json = simplejson.loads(response.read())
-        response.close()
+        json = get_url_response(url)
         podkatalogi = json['items']
         title = json['items'][0].get('website_title','')
         for item in podkatalogi:
@@ -120,24 +132,8 @@ def listingTVP(items):
         xbmcplugin.endOfDirectory(pluginHandle) 
  
 def get_stream_url(channel_id):
-    print 'http://www.tvp.pl/pub/stat/videofileinfo?video_id=' + channel_id
-    if __settings__.getSetting('pl_proxy') == '':
-        videofileinfo = urllib2.urlopen('http://www.tvp.pl/pub/stat/videofileinfo?video_id=' + channel_id)
-    else:
-        pl_proxy = 'http://' + __settings__.getSetting('pl_proxy') + ':' + __settings__.getSetting('pl_proxy_port')
-        proxy_handler = urllib2.ProxyHandler({'http':pl_proxy})
-        if __settings__.getSetting('pl_proxy_pass') <> '' and __settings__.getSetting('pl_proxy_user') <> '':
-            password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
-            password_mgr.add_password(None, pl_proxy, __settings__.getSetting('pl_proxy_user'), __settings__.getSetting('pl_proxy_pass'))
-            proxy_auth_handler = urllib2.ProxyBasicAuthHandler(password_mgr)
-            opener = urllib2.build_opener(proxy_handler, proxy_auth_handler)
-        else:
-            opener = urllib2.build_opener(proxy_handler)
-        videofileinfo = opener.open('http://www.tvp.pl/pub/stat/videofileinfo?video_id=' + channel_id)
-
-    json = simplejson.loads(videofileinfo.read())
-    videofileinfo.close()
-
+    json = get_url_response('http://www.tvp.pl/pub/stat/videofileinfo?video_id=' + channel_id)
+        
     if json['video_url'].find('video-4') <0:
         video_url = json['video_url']
     else:
