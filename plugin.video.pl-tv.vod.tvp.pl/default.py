@@ -147,15 +147,6 @@ def get_stream_url(channel_id):
             profile_name_list = ['HD','Bardzo wysoka','Wysoka','Średnia']
             quality = xbmcgui.Dialog().select('Wybierz jakość', profile_name_list)
         video_url = json['video_url'].replace('video-4.','video-'+str(7-quality)+'.')
-    
-    if __settings__.getSetting('pl_proxy') == '':
-        videofileinfo = urllib2.urlopen(video_url)
-    else:
-        videofileinfo = opener.open(video_url)
-
-    video_url = videofileinfo.read()
-    videofileinfo.close()
-
     return video_url
 
 
