@@ -23,7 +23,7 @@
 
 <addon id="plugin.video.pl-tv.vod.tvp.pl"
        name="Vod.tvp.pl"
-       version="1.0.13"
+       version="1.0.14"
        provider-name="xbmc-pl-tv, smuto, sd-xbmc">
   <requires>
     <import addon="xbmc.python" version="2.14.0"/>

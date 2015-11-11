@@ -1,3 +1,6 @@
+1.0.14:
+-Full HD support
+
 1.0.13:
 -Fixed VOD TVP connection
 
