@@ -143,11 +143,13 @@ def get_stream_url(channel_id):
     if __settings__.getSetting('auto_quality') == 'true' :
         quality = int(__settings__.getSetting('quality'))
     else:
-        profile_name_list = ['HD','Bardzo wysoka','Wysoka','Średnia']
+        profile_name_list = ['Full HD','HD','Bardzo wysoka','Wysoka','Średnia']
         quality = xbmcgui.Dialog().select('Wybierz jakość', profile_name_list)
     video_url = ''
+    if quality > 0:
+        quality += 1
     for item in json['formats']:
-        if item['url'].find('video-'+str(7-quality)) > 0 and item['mimeType'] == 'video/mp4':
+        if item['url'].find('video-'+str(9-quality)) > 0 and item['mimeType'] == 'video/mp4':
             video_url = item['url']
         if item['url'].find('video-4') > 0 and item['mimeType'] == 'video/mp4' and video_url == '':
             video_url = item['url']
