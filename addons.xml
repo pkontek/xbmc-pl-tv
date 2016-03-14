@@ -2,7 +2,7 @@
 <addons>
 <addon id="plugin.video.pl-tv.tvnplayer.pl"
        name="TVNPlayer"
-       version="1.2.12"
+       version="1.2.13"
        provider-name="smuto, sd-xbmc, xbmc-pl-tv">
   <requires>
     <import addon="xbmc.python" version="2.14.0"/>

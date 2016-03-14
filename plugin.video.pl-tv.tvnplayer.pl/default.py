@@ -8,7 +8,8 @@ import simplejson, socket
 pluginUrl = sys.argv[0]
 pluginHandle = int(sys.argv[1])
 pluginQuery = sys.argv[2]
-base_url = 'http://tvnplayer.pl/api/?platform=ConnectedTV&terminal=Samsung&format=json&v=2.0&authKey=ba786b315508f0920eca1c34d65534cd'
+#base_url = 'http://tvnplayer.pl/api/?platform=ConnectedTV&terminal=Samsung&format=json&v=2.0&authKey=ba786b315508f0920eca1c34d65534cd'
+base_url = 'http://tvnplayer.pl/api/?platform=Mobile&terminal=Android&format=json&v=2.0&authKey=b4bc971840de63d105b3166403aa1bea'
 scale_url = 'http://redir.atmcdn.pl/scale/o2/tvn/web-content/m/'
 
 __settings__ = xbmcaddon.Addon(id='plugin.video.pl-tv.tvnplayer.pl')
@@ -142,6 +143,8 @@ def TVNPlayerItem(type, id):
                 else:
                     select = xbmcgui.Dialog().select('Wybierz jakość', profile_name_list)
                 stream_url = json['item']['videos']['main']['video_content'][select]['url']
+                print stream_url
+
                 if __settings__.getSetting('checkClientip') == 'False':
                     new_stream_url = opener.open(stream_url)
                 else:
