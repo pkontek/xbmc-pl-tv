@@ -8,8 +8,7 @@ import simplejson, socket
 pluginUrl = sys.argv[0]
 pluginHandle = int(sys.argv[1])
 pluginQuery = sys.argv[2]
-#base_url = 'http://tvnplayer.pl/api/?platform=ConnectedTV&terminal=Samsung&format=json&v=2.0&authKey=ba786b315508f0920eca1c34d65534cd'
-base_url = 'http://tvnplayer.pl/api/?platform=Mobile&terminal=Android&format=json&v=2.0&authKey=b4bc971840de63d105b3166403aa1bea'
+base_url = 'http://tvnplayer.pl/api/?platform=ConnectedTV&terminal=Samsung2&format=json&v=3.6&authKey=453198a80ccc99e8485794789292f061'
 scale_url = 'http://redir.atmcdn.pl/scale/o2/tvn/web-content/m/'
 
 __settings__ = xbmcaddon.Addon(id='plugin.video.pl-tv.tvnplayer.pl')
@@ -41,7 +40,7 @@ def TVNPlayerAPI(m,type,id,season):
         json = simplejson.loads(response.read())
         response.close()
         if type == "series":
-            if json['items'][0]['season'] == str(season):
+            if json['items'][0]['season'] == season:
                 return TVNPlayerItems(json)
             else:
                 seasons = json['seasons']
@@ -62,6 +61,7 @@ def TVNPlayerItems(json):
             type = item.get('type','')
             type_episode = item.get('type_episode','')
             clickable = item['clickable']
+            payable = item['payable']
             id = item['id']
             thumbnail = item['thumbnail'][0]['url']
             gets = {'type': 1,
@@ -74,7 +74,7 @@ def TVNPlayerItems(json):
                     'dstw': 256,
                     'dsth': 292}
             if type == 'episode':
-                if clickable == 1 :                
+                if clickable == 1 and payable == 0:                
                 #if type_episode == 'normal' or type_episode == 'catchup':
                     tvshowtitle = item.get('title','')
                     episode = item.get('episode','')
@@ -142,16 +142,9 @@ def TVNPlayerItem(type, id):
                         select = xbmcgui.Dialog().select('Wybierz jakość', profile_name_list)
                 else:
                     select = xbmcgui.Dialog().select('Wybierz jakość', profile_name_list)
-                stream_url = json['item']['videos']['main']['video_content'][select]['url']
-                print stream_url
-
-                if __settings__.getSetting('checkClientip') == 'False':
-                    new_stream_url = opener.open(stream_url)
-                else:
-                    new_stream_url = urllib2.urlopen(stream_url)
-                stream_url = new_stream_url.read()
-                new_stream_url.close()
-                xbmcplugin.setResolvedUrl(pluginHandle, True, xbmcgui.ListItem(path=stream_url))
+                if select >= 0:
+	                stream_url = json['item']['videos']['main']['video_content'][select]['src']
+	                xbmcplugin.setResolvedUrl(pluginHandle, True, xbmcgui.ListItem(path=stream_url))
 
 def htmlToText(html):
     html = re.sub('<.*?>','',html)
