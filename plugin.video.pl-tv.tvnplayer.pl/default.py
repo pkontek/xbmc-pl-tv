@@ -1,9 +1,18 @@
 ﻿# -*- coding: utf-8 -*-
 import xbmcaddon
+import os
 
-import urllib,urllib2,re,xbmcplugin,xbmcgui
+__settings__ = xbmcaddon.Addon(id='plugin.video.pl-tv.tvnplayer.pl')
+BASE_RESOURCE_PATH = os.path.join(__settings__.getAddonInfo('path'), 'resources')
+sys.path.append(os.path.join(BASE_RESOURCE_PATH, 'lib'))
+
+import urllib,urllib2,re,time
+import xbmcplugin,xbmcgui
 import simplejson, socket
-
+from hashlib import sha1
+import crypto.cipher.aes_cbc
+import crypto.cipher.base, base64
+import binascii
 
 pluginUrl = sys.argv[0]
 pluginHandle = int(sys.argv[1])
@@ -11,7 +20,7 @@ pluginQuery = sys.argv[2]
 base_url = 'http://tvnplayer.pl/api/?platform=ConnectedTV&terminal=Samsung2&format=json&v=3.6&authKey=453198a80ccc99e8485794789292f061'
 scale_url = 'http://redir.atmcdn.pl/scale/o2/tvn/web-content/m/'
 
-__settings__ = xbmcaddon.Addon(id='plugin.video.pl-tv.tvnplayer.pl')
+
 
 socket.setdefaulttimeout(10)
 
@@ -22,6 +31,7 @@ def TVNPlayerAPI(m,type,id,season):
         GeoIP.close()
         __settings__.setSetting(id='checkClientip', value=str(GeoIPjson['result']))
         url = base_url + '&m=%s'% (m)
+
         response = urllib2.urlopen(url)
         json = simplejson.loads(response.read())
         response.close()
@@ -60,6 +70,7 @@ def TVNPlayerItems(json):
             name = item.get('title','')
             type = item.get('type','')
             type_episode = item.get('type_episode','')
+            numbering_episodes = item.get('numbering_episodes','')
             clickable = item['clickable']
             payable = item['payable']
             id = item['id']
@@ -74,8 +85,7 @@ def TVNPlayerItems(json):
                     'dstw': 256,
                     'dsth': 292}
             if type == 'episode':
-                if clickable == 1 and payable == 0:                
-                #if type_episode == 'normal' or type_episode == 'catchup':
+                if clickable == 1: # and payable == 0:                
                     tvshowtitle = item.get('title','')
                     episode = item.get('episode','')
                     sub_title = item.get('sub_title','')
@@ -86,7 +96,7 @@ def TVNPlayerItems(json):
                     name = tvshowtitle + ' - ' + sub_title
                     if not sub_title or tvshowtitle == sub_title:
                         name = tvshowtitle
-                    if type_episode == 'catchup' :
+                    if type_episode == 'catchup' or (numbering_episodes == 1 and not sub_title):
                         if str(episode) == '0' :
                             name = name
                         elif str(season) == '0' :
@@ -96,55 +106,76 @@ def TVNPlayerItems(json):
                     addLink(name,url,thumbnail,gets,tvshowtitle,lead,episode,season,start_date)
             else:
                 addDir(name,'getItems',type,id,thumbnail,gets,'')
+                xbmcplugin.addSortMethod(pluginHandle, xbmcplugin.SORT_METHOD_LABEL)
 
 def TVNPlayerItem(type, id):
-        if __settings__.getSetting('checkClientip') == 'False' and __settings__.getSetting('pl_proxy') == '':
-            __settings__.openSettings()
+    urlQuery = '&type=%s&id=%s&sort=newest&m=getItem&deviceScreenHeight=1080&deviceScreenWidth=1920' % (type, id)
+    getItem = urlOpen(base_url + urlQuery)
+    json = simplejson.loads(getItem.read())
+    getItem.close()
+    video_content = json['item']['videos']['main']['video_content']
+    if not video_content:
+        ok = xbmcgui.Dialog().ok('TVNPlayer', 'Jak używasz proxy', 'to właśnie przestało działać')
+        return ok
+    else:
+        profile_name_list = []
+        for item in video_content:
+            profile_name = item['profile_name']
+            profile_name_list.append(profile_name)
+        if __settings__.getSetting('auto_quality') == 'true' :
+            if 'HD' in profile_name_list:
+                select = profile_name_list.index('HD')
+            elif 'Bardzo Wysoka' in profile_name_list:
+                select = profile_name_list.index('Bardzo Wysoka')
+            elif 'Wysoka' in profile_name_list:
+                select = profile_name_list.index('Wysoka')
+            else:
+                select = xbmcgui.Dialog().select('Wybierz jakość', profile_name_list)
         else:
-            if __settings__.getSetting('checkClientip') == 'False':
-                pl_proxy = 'http://' + __settings__.getSetting('pl_proxy') + ':' + __settings__.getSetting('pl_proxy_port')
-                proxy_handler = urllib2.ProxyHandler({'http':pl_proxy})
-                if __settings__.getSetting('pl_proxy_pass') <> '' and __settings__.getSetting('pl_proxy_user') <> '':
-                    password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
-                    password_mgr.add_password(None, pl_proxy, __settings__.getSetting('pl_proxy_user'), __settings__.getSetting('pl_proxy_pass'))
-                    proxy_auth_handler = urllib2.ProxyBasicAuthHandler(password_mgr)
-                    opener = urllib2.build_opener(proxy_handler, proxy_auth_handler)
-                else:
-                    opener = urllib2.build_opener(proxy_handler)
-            urlQuery = '&type=%s&id=%s&sort=newest&m=getItem&deviceScreenHeight=1080&deviceScreenWidth=1920' % (type, id)
-            if __settings__.getSetting('checkClientip') == 'False':
-                try:
-                    getItem = opener.open(base_url + urlQuery)
-                except Exception, ex:
-                    ok = xbmcgui.Dialog().ok('TVNPlayer', 'Coś nie tak z Twoim proxy', 'error message', str(ex))
-                    return ok
+            select = xbmcgui.Dialog().select('Wybierz jakość', profile_name_list)
+        if select >= 0:
+            if 'url' in json['item']['videos']['main']['video_content'][select]:
+                stream_url = json['item']['videos']['main']['video_content'][select]['url']
             else:
-                getItem = urllib2.urlopen(base_url + urlQuery)
-            json = simplejson.loads(getItem.read())
-            getItem.close()
-            video_content = json['item']['videos']['main']['video_content']
-            if not video_content:
-                ok = xbmcgui.Dialog().ok('TVNPlayer', 'Jak używasz proxy', 'to właśnie przestało działać')
-                return ok
+                stream_url = json['item']['videos']['main']['video_content'][select]['src']
+            if 'video_content_license_type' in json['item']['videos']['main'] and json['item']['videos']['main']['video_content_license_type'] == 'WIDEVINE':
+                #przełączamy się na Android
+                stream_url = generateToken(stream_url).encode('UTF-8')
             else:
-                profile_name_list = []
-                for item in video_content:
-                    profile_name = item['profile_name']
-                    profile_name_list.append(profile_name)
-                if __settings__.getSetting('auto_quality') == 'true' :
-                    if 'HD' in profile_name_list:
-                        select = profile_name_list.index('HD')
-                    elif 'Bardzo Wysoka' in profile_name_list:
-                        select = profile_name_list.index('Bardzo Wysoka')
-                    elif 'Wysoka' in profile_name_list:
-                        select = profile_name_list.index('Wysoka')
-                    else:
-                        select = xbmcgui.Dialog().select('Wybierz jakość', profile_name_list)
-                else:
-                    select = xbmcgui.Dialog().select('Wybierz jakość', profile_name_list)
-                if select >= 0:
-	                stream_url = json['item']['videos']['main']['video_content'][select]['src']
-	                xbmcplugin.setResolvedUrl(pluginHandle, True, xbmcgui.ListItem(path=stream_url))
+                getItem = urlOpen(stream_url)
+                stream_url = getItem.read()
+                getItem.close()
+            xbmcplugin.setResolvedUrl(pluginHandle, True, xbmcgui.ListItem(path=stream_url))
+            
+
+def generateToken(url):
+    # obsługa Android z sd-xbmc.org
+    url = url.replace('http://redir.atmcdn.pl/http/','')
+    SecretKey = 'AB9843DSAIUDHW87Y3874Q903409QEWA'
+    iv = 'ab5ef983454a21bd'
+    KeyStr = '0f12f35aa0c542e45926c43a39ee2a7b38ec2f26975c00a30e1292f7e137e120e5ae9d1cfe10dd682834e3754efc1733'
+    salt = sha1()
+    salt.update(os.urandom(16))
+    salt = salt.hexdigest()[:32]
+
+    tvncrypt = crypto.cipher.aes_cbc.AES_CBC(SecretKey, padding=crypto.cipher.base.noPadding(), keySize=32)
+    key = tvncrypt.decrypt(binascii.unhexlify(KeyStr), iv=iv)[:32]
+
+    expire = 3600000L + long(time.time()*1000) - 946684800000L
+
+    unencryptedToken = "name=%s&expire=%s\0" % (url, expire)
+
+    pkcs5_pad = lambda s: s + (16 - len(s) % 16) * chr(16 - len(s) % 16)
+    pkcs5_unpad = lambda s : s[0:-ord(s[-1])]
+
+    unencryptedToken = pkcs5_pad(unencryptedToken)
+
+    tvncrypt = crypto.cipher.aes_cbc.AES_CBC(binascii.unhexlify(key), padding=crypto.cipher.base.noPadding(), keySize=16)
+    encryptedToken = tvncrypt.encrypt(unencryptedToken, iv=binascii.unhexlify(salt))
+    encryptedTokenHEX = binascii.hexlify(encryptedToken).upper()
+
+    return "http://redir.atmcdn.pl/http/%s?salt=%s&token=%s" % (url, salt, encryptedTokenHEX)
+
 
 def htmlToText(html):
     html = re.sub('<.*?>','',html)
@@ -207,6 +238,29 @@ def addLink(name,url,thumbnail,gets,serie_title,lead,episode,season,start_date):
         liz.setProperty('Fanart_Image', 'http://redir.atmcdn.pl/http/o2/tvn/web-content/m/' + thumbnail)
         ok=xbmcplugin.addDirectoryItem(handle=pluginHandle,url=url,listitem=liz,isFolder=False)
         return ok
+
+def urlOpen(url):
+    if __settings__.getSetting('checkClientip') == 'False' and __settings__.getSetting('pl_proxy') == '':
+        __settings__.openSettings()
+    if __settings__.getSetting('checkClientip') == 'False':
+        pl_proxy = 'http://' + __settings__.getSetting('pl_proxy') + ':' + __settings__.getSetting('pl_proxy_port')
+        proxy_handler = urllib2.ProxyHandler({'http':pl_proxy})
+        if __settings__.getSetting('pl_proxy_pass') <> '' and __settings__.getSetting('pl_proxy_user') <> '':
+            password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
+            password_mgr.add_password(None, pl_proxy, __settings__.getSetting('pl_proxy_user'), __settings__.getSetting('pl_proxy_pass'))
+            proxy_auth_handler = urllib2.ProxyBasicAuthHandler(password_mgr)
+            opener = urllib2.build_opener(proxy_handler, proxy_auth_handler)
+        else:
+            opener = urllib2.build_opener(proxy_handler)
+    if __settings__.getSetting('checkClientip') == 'False':
+        try:
+            getItem = opener.open(url)
+        except Exception, ex:
+            ok = xbmcgui.Dialog().ok('TVNPlayer', 'Coś nie tak z Twoim proxy', 'error message', str(ex))
+            return ok
+    else:
+        getItem = urllib2.urlopen(url)
+    return getItem
 
 params=get_params()
 
