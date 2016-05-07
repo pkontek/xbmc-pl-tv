@@ -109,6 +109,36 @@ def TVNPlayerItems(json):
                 addDir(name,'getItems',type,id,thumbnail,gets,'')
                 xbmcplugin.addSortMethod(pluginHandle, xbmcplugin.SORT_METHOD_LABEL)
 
+def SelectProfileUrl(video_content):
+    if not video_content:
+        ok = xbmcgui.Dialog().ok('TVNPlayer', 'Jak używasz proxy', 'to właśnie przestało działać')
+        return ok
+    else:
+        profile_name_list = []
+        for item in video_content:
+            profile_name = item['profile_name']
+            profile_name_list.append(profile_name)
+        if __settings__.getSetting('auto_quality') == 'true' :
+            if 'HD' in profile_name_list:
+                select = profile_name_list.index('HD')
+            elif 'Bardzo Wysoka' in profile_name_list:
+                select = profile_name_list.index('Bardzo Wysoka')
+            elif 'Wysoka' in profile_name_list:
+                select = profile_name_list.index('Wysoka')
+            else:
+                select = xbmcgui.Dialog().select('Wybierz jakość', profile_name_list)
+        else:
+            select = xbmcgui.Dialog().select('Wybierz jakość', profile_name_list)
+        print video_content
+        print select
+        if select >= 0:
+            if 'url' in video_content[select]:
+                stream_url = video_content[select]['url']
+            else:
+                stream_url = video_content[select]['src']
+            return stream_url
+
+
 def TVNPlayerItem(type, id):
     urlQuery = '&type=%s&id=%s&sort=newest&m=getItem&deviceScreenHeight=1080&deviceScreenWidth=1920' % (type, id)
     getItem = urlOpen(base_url + urlQuery)
@@ -116,45 +146,26 @@ def TVNPlayerItem(type, id):
     getItem.close()
     if 'video_content_license_type' in json['item']['videos']['main'] and json['item']['videos']['main']['video_content_license_type'] == 'WIDEVINE':
         #przełączamy się na Android
+
         getItem = urlOpen(android_url + urlQuery)
         json = simplejson.loads(getItem.read())
         getItem.close()
-        if 'url' in json['item']['videos']['main']['video_content'][select]:
-        	stream_url = json['item']['videos']['main']['video_content'][select]['url']
-        else:
-        	stream_url = json['item']['videos']['main']['video_content'][select]['src']
-        stream_url = generateToken(stream_url).encode('UTF-8')
-    else:
-	    video_content = json['item']['videos']['main']['video_content']
-	    if not video_content:
-	        ok = xbmcgui.Dialog().ok('TVNPlayer', 'Jak używasz proxy', 'to właśnie przestało działać')
-	        return ok
-	    else:
-	        profile_name_list = []
-	        for item in video_content:
-	            profile_name = item['profile_name']
-	            profile_name_list.append(profile_name)
-	        if __settings__.getSetting('auto_quality') == 'true' :
-	            if 'HD' in profile_name_list:
-	                select = profile_name_list.index('HD')
-	            elif 'Bardzo Wysoka' in profile_name_list:
-	                select = profile_name_list.index('Bardzo Wysoka')
-	            elif 'Wysoka' in profile_name_list:
-	                select = profile_name_list.index('Wysoka')
-	            else:
-	                select = xbmcgui.Dialog().select('Wybierz jakość', profile_name_list)
-	        else:
-	            select = xbmcgui.Dialog().select('Wybierz jakość', profile_name_list)
-	        if select >= 0:
-	            if 'url' in json['item']['videos']['main']['video_content'][select]:
-	                stream_url = json['item']['videos']['main']['video_content'][select]['url']
-	            else:
-	                stream_url = json['item']['videos']['main']['video_content'][select]['src']
+        video_content = json['item']['videos']['main']['video_content']
+        if not video_content:
+            ok = xbmcgui.Dialog().ok('TVNPlayer', 'Film zabezpieczony DRM!', 'Wyświetlenie nie jest możliwe.')
+            return ok
 
-                getItem = urlOpen(stream_url)
-                stream_url = getItem.read()
-                getItem.close()
-	    xbmcplugin.setResolvedUrl(pluginHandle, True, xbmcgui.ListItem(path=stream_url))
+        stream_url = SelectProfileUrl(video_content)
+        if not isinstance(stream_url,int):
+            stream_url = generateToken(stream_url).encode('UTF-8')
+    else:
+        video_content = json['item']['videos']['main']['video_content']
+        stream_url = SelectProfileUrl(video_content)
+        getItem = urlOpen(stream_url)
+        stream_url = getItem.read()
+        getItem.close()
+    if not isinstance(stream_url,int):
+        xbmcplugin.setResolvedUrl(pluginHandle, True, xbmcgui.ListItem(path=stream_url))
             
 
 def generateToken(url):
