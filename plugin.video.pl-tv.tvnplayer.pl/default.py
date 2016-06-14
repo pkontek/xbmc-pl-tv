@@ -143,8 +143,6 @@ def TVNPlayerItem(type, id):
     urlQuery = '&type=%s&id=%s&sort=newest&m=getItem&deviceScreenHeight=1080&deviceScreenWidth=1920' % (type, id)
     getItem = urlOpen(base_url + urlQuery)
     json = simplejson.loads(getItem.read())
-    print base_url + urlQuery
-    print json
     getItem.close()
     if 'video_content_license_type' in json['item']['videos']['main'] and json['item']['videos']['main']['video_content_license_type'] == 'WIDEVINE':
         #przełączamy się na Android
@@ -152,8 +150,6 @@ def TVNPlayerItem(type, id):
         getItem = urlOpen(android_url + urlQuery)
         json = simplejson.loads(getItem.read())
         getItem.close()
-        print android_url + urlQuery
-        print json
         video_content = json['item']['videos']['main']['video_content']
         if not video_content:
             ok = xbmcgui.Dialog().ok('TVNPlayer', 'Film zabezpieczony DRM!', 'Wyświetlenie nie jest możliwe.')
