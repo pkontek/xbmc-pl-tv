@@ -18,7 +18,7 @@ pluginUrl = sys.argv[0]
 pluginHandle = int(sys.argv[1])
 pluginQuery = sys.argv[2]
 base_url = 'http://tvnplayer.pl/api/?platform=ConnectedTV&terminal=Samsung2&format=json&v=3.6&authKey=453198a80ccc99e8485794789292f061'
-android_url = 'http://tvnplayer.pl/api/?platform=Mobile&terminal=Android&format=json&v=3.0&authKey=b4bc971840de63d105b3166403aa1bea'
+android_url = 'http://tvnplayer.pl/api/?platform=Mobile&terminal=Android&format=json&v=3.7&authKey=4dc7b4f711fb9f3d53919ef94c23890c'
 scale_url = 'http://redir.atmcdn.pl/scale/o2/tvn/web-content/m/'
 
 
@@ -143,6 +143,8 @@ def TVNPlayerItem(type, id):
     urlQuery = '&type=%s&id=%s&sort=newest&m=getItem&deviceScreenHeight=1080&deviceScreenWidth=1920' % (type, id)
     getItem = urlOpen(base_url + urlQuery)
     json = simplejson.loads(getItem.read())
+    print base_url + urlQuery
+    print json
     getItem.close()
     if 'video_content_license_type' in json['item']['videos']['main'] and json['item']['videos']['main']['video_content_license_type'] == 'WIDEVINE':
         #przełączamy się na Android
@@ -150,6 +152,8 @@ def TVNPlayerItem(type, id):
         getItem = urlOpen(android_url + urlQuery)
         json = simplejson.loads(getItem.read())
         getItem.close()
+        print android_url + urlQuery
+        print json
         video_content = json['item']['videos']['main']['video_content']
         if not video_content:
             ok = xbmcgui.Dialog().ok('TVNPlayer', 'Film zabezpieczony DRM!', 'Wyświetlenie nie jest możliwe.')
