@@ -1,3 +1,6 @@
+1.0.15:
+-old VOD files support
+
 1.0.14:
 -Full HD support
 

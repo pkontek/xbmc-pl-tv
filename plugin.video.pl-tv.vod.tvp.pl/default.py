@@ -153,6 +153,8 @@ def get_stream_url(channel_id):
             video_url = item['url']
         if item['url'].find('video-4') > 0 and item['mimeType'] == 'video/mp4' and video_url == '':
             video_url = item['url']
+    if video_url == '':
+        video_url = item['url']
     return video_url
 
 
