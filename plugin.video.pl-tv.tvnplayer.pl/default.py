@@ -17,10 +17,10 @@ import binascii
 pluginUrl = sys.argv[0]
 pluginHandle = int(sys.argv[1])
 pluginQuery = sys.argv[2]
-base_url = 'http://tvnplayer.pl/api/?platform=ConnectedTV&terminal=Samsung2&format=json&v=3.6&authKey=453198a80ccc99e8485794789292f061'
+#base_url = 'http://tvnplayer.pl/api/?platform=ConnectedTV&terminal=Samsung2&format=json&v=3.6&authKey=453198a80ccc99e8485794789292f061'
+base_url = 'http://api.tvnplayer.pl/api/?platform=ConnectedTV&terminal=Samsung2&format=json&authKey=453198a80ccc99e8485794789292f061&v=3.6&showContentContractor=free%2Csamsung%2Cstandard&m=getItem&android23video=1&deviceType=Tablet&os=4.1.1&playlistType=&connectionType=WIFI&deviceScreenWidth=1920&deviceScreenHeight=1080&appVersion=3.3.4&manufacturer=unknown&model=androVMTablet'
 android_url = 'http://tvnplayer.pl/api/?platform=Mobile&terminal=Android&format=json&v=3.7&authKey=4dc7b4f711fb9f3d53919ef94c23890c'
 scale_url = 'http://redir.atmcdn.pl/scale/o2/tvn/web-content/m/'
-
 
 
 socket.setdefaulttimeout(10)
@@ -129,8 +129,6 @@ def SelectProfileUrl(video_content):
                 select = xbmcgui.Dialog().select('Wybierz jakość', profile_name_list)
         else:
             select = xbmcgui.Dialog().select('Wybierz jakość', profile_name_list)
-        print video_content
-        print select
         if select >= 0:
             if 'url' in video_content[select]:
                 stream_url = video_content[select]['url']
@@ -150,6 +148,7 @@ def TVNPlayerItem(type, id):
         getItem = urlOpen(android_url + urlQuery)
         json = simplejson.loads(getItem.read())
         getItem.close()
+
         video_content = json['item']['videos']['main']['video_content']
         if not video_content:
             ok = xbmcgui.Dialog().ok('TVNPlayer', 'Film zabezpieczony DRM!', 'Wyświetlenie nie jest możliwe.')
@@ -308,11 +307,6 @@ try:
 except:
         season="0"
         pass
-
-print "Tryb: "+str(m)
-print "Typ: "+str(type)
-print "ID: "+str(id)
-print "Sezon: "+str(season)
 
 if m == "mainInfo":
         TVNPlayerAPI(m,type,id,season)
