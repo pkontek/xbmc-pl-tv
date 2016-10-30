@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
 	<setting id="auto_quality" type="bool" label="30042" default="true"/>
-	<setting id="quality" type="enum" label="30049" lvalues="30050|30048|30047|30046|30045"/>
+	<setting id="quality" type="enum" label="30048" lvalues="30050|30048|30047|30046|30045"/>
     <setting type="sep" />
     <setting label="Darmowe proxy - http://spys.ru/free-proxy-list/PL/" type="lsep"/>
     <setting id="pl_proxy" type="text" label="30040" default=""/>
