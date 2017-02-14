@@ -17,8 +17,9 @@ import binascii
 pluginUrl = sys.argv[0]
 pluginHandle = int(sys.argv[1])
 pluginQuery = sys.argv[2]
-#base_url = 'http://tvnplayer.pl/api/?platform=ConnectedTV&terminal=Samsung2&format=json&v=3.6&authKey=453198a80ccc99e8485794789292f061'
-base_url = 'http://api.tvnplayer.pl/api/?platform=ConnectedTV&terminal=Samsung2&format=json&authKey=453198a80ccc99e8485794789292f061&v=3.6&showContentContractor=free%2Csamsung%2Cstandard&m=getItem&android23video=1&deviceType=Tablet&os=4.1.1&playlistType=&connectionType=WIFI&deviceScreenWidth=1920&deviceScreenHeight=1080&appVersion=3.3.4&manufacturer=unknown&model=androVMTablet'
+#base_url = 'http://api.tvnplayer.pl/api/?platform=ConnectedTV&terminal=Samsung2&format=json&authKey=453198a80ccc99e8485794789292f061&v=3.6&showContentContractor=free%2Csamsung%2Cstandard&m=getItem&android23video=1&deviceType=Tablet&os=4.1.1&playlistType=&connectionType=WIFI&deviceScreenWidth=1920&deviceScreenHeight=1080&appVersion=3.3.4&manufacturer=unknown&model=androVMTablet'
+base_url = 'http://tvnplayer.pl/api/?platform=ConnectedTV&terminal=Panasonic&format=json&v=3.1&authKey=064fda5ab26dc1dd936f5c6e84b7d3c2'
+#'host' : 'Mozilla/5.0 (Linux; U; Android 2.3.4; en-us; Kindle Fire Build/GINGERBREAD) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1',
 android_url = 'http://tvnplayer.pl/api/?platform=Mobile&terminal=Android&format=json&v=3.7&authKey=4dc7b4f711fb9f3d53919ef94c23890c'
 scale_url = 'http://redir.atmcdn.pl/scale/o2/tvn/web-content/m/'
 
@@ -160,11 +161,12 @@ def TVNPlayerItem(type, id):
     else:
         video_content = json['item']['videos']['main']['video_content']
         stream_url = SelectProfileUrl(video_content)
-        getItem = urlOpen(stream_url)
-        stream_url = getItem.read()
-        getItem.close()
+        #getItem = urlOpen(stream_url)
+        #stream_url = getItem.read()
+        #getItem.close()
     if not isinstance(stream_url,int):
         xbmcplugin.setResolvedUrl(pluginHandle, True, xbmcgui.ListItem(path=stream_url))
+
             
 
 def generateToken(url):
