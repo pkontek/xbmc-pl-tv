@@ -100,7 +100,10 @@ def listingTVP(items):
                     date = item['release_date'].get('sec','')
                     if 'image' in item:
                         iconFile = item['image'][0]['file_name']
-                        iconWidth = item['image'][0]['width']
+                        if 'width' in item['image'][0]:
+                            iconWidth = item['image'][0]['width']
+                        else:
+                            iconwidth = 0
                         iconUrl = urlImage %(iconFile[0],iconFile[1],iconFile[2],iconFile[:-4],iconWidth)
                     else:
                         iconUrl = __settings__.getAddonInfo('icon')
